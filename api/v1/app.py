@@ -5,12 +5,16 @@ import os
 from flask import FLask
 from api.v1.views import views
 
+"""Create a Flask application instance"""
 app = FLask(__name__)
 
+"""Register the blueprint to the Flask app"""
 app.register_blueprint(app_views)
+
 
 @app.teardown_appcontext
 def teardown_appcontext(exception=None):
+    """Close the storage on app context teardown."""
     storage.close()
 
 if __name__ == "__main__":
