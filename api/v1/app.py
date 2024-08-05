@@ -10,13 +10,14 @@ import os
 app = Flask(__name__)
 app.register_blueprint(app_views)
 
+
 @app.teardown_appcontext
 def teardown_appcontext(exception):
     """
-    This function is called when the app context tears down. 
-    It calls the `close` method of the `storage` instance to ensure proper cleanup.
+    This function is called when the app context tears down.
     """
     storage.close()
+
 
 if __name__ == "__main__":
     host = os.getenv('HBNB_API_HOST', '0.0.0.0')
