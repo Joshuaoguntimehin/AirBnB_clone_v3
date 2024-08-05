@@ -74,43 +74,33 @@ class DBStorage:
     def close(self):
         """call remove() method on the private session attribute"""
         self.__session.remove()
-        
+    
     def get(self, cls, id):
         """
-        Retrieve an object based on the class and its ID.
-
-        Args:
-            cls (type): The class of the object.
-            id (str): The ID of the object.
-
-        Returns:
-            object: The object if found, or None if not found.
+        Retrieve an object from the database based on the class and its ID.
         """
-        if cls and id:
-            if cls in self.classes.values() and isinstance(id, str):
-                all_objects = self.all(cls)
-                for key, value in all_objects.items():
-                    # Ensure the key format matches your actual storage
-                    if key.split('_')[1] == id:
-                        return value
-                return None  # Return None if the object is not found
-        return None
-    
+        if cls is None or id is None:
+            return None
+
+        if type(cls) == str:
+            cls = eval(cls)  # Convert string to class
+
+        try:
+            return self.__session.query(cls).get(id)
+        except Exception as e:
+            return None
+
     def count(self, cls=None):
         """
-        Count the number of objects in storage matching the given class.
-
-        Args:
-            cls (type, optional): The class of objects to count. Defaults to None.
-
-        Returns:
-            int: The number of objects in storage matching the given class.
-                 If no class is passed, returns the count of all objects in storage.
+        Count the number of objects in the database.
         """
-        if not cls:
-            all_objects = self.all()
-            return len(all_objects)
-        if cls in self.classes.values():  # Correct the use of 'is'
-            objects_of_cls = self.all(cls)
-            return len(objects_of_cls)
-        return 0  # Return 0 if the class is not found
+        if cls:
+            if type(cls) == str:
+                cls = eval(cls)  # Convert string to class
+
+            return self.__session.query(cls).count()
+        else:
+            total = 0
+            for cls in Base.classes:  # Assuming all mapped classes are in Base.classes
+                total += self.__session.query(cls).count()
+            return total

@@ -72,34 +72,18 @@ class FileStorage:
     
     def get(self, cls, id):
         """
-        Retrieve an object based on the class and its ID.
-
-        Args:
-            cls (type): The class of the object.
-            id (str): The ID of the object.
-
-        Returns:
-            object: The object if found, or None if not found.
+        Retrieve an object from the storage based on the class and its ID.
         """
-        if cls and id:
-            if cls in classes.values():  # Ensure 'classes' is defined somewhere
-                all_subjects = self.all(cls)
-            
-                for value in all_subjects.values():  # Use the correct variable name
-                    if value.id == id:
-                        return value
-                    return None  # Explicitly return None if not found
+        if cls is None or id is None:
+            return None
+
+        key = f"{cls.__name__}.{id}"
+        return self.__objects.get(key, None)
+
     def count(self, cls=None):
-        """_summary_
-
-        Args:
-            cls (_type_, optional): _description_. Defaults to None.
         """
-        if not cls:
-            lost_of_all_cls = self.all()
-            return len(lost_of_all_cls)
-        if cls is classes.values():
-            all_lost_of_prev_cls = self.all(cls)
-            return len(all_lost_of_prev_cls)
-        if cls not in classes.values():
-            return 
+        Count the number of objects in the storage.
+        """
+        if cls:
+            return len(self.all(cls))
+        return len(self.__objects)

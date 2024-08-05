@@ -2,11 +2,12 @@
 """import statement"""
 from models import storage
 import os
-from flask import FLask, jsonify
-from api.v1.views import views
+from flask import Flask
+from flask import jsonify
+from api.v1.views import __init__
 
 """Create a Flask application instance"""
-app = FLask(__name__)
+app = Flask(__name__)
 
 
 """Register the blueprint to the Flask app"""
