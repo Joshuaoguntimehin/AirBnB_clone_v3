@@ -4,7 +4,7 @@ from models import storage
 import os
 from flask import Flask
 from flask import jsonify
-from api.v1.views import __init__
+from api.v1.views import app_views
 
 """Create a Flask application instance"""
 app = Flask(__name__)
