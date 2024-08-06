@@ -1,33 +1,34 @@
 #!/usr/bin/python3
-"""
-Flask application setup
-"""
-from flask import Flask, jsonify
+"""import statement"""
 from models import storage
-from api.v1.views import app_views
 import os
+from flask import Flask
+from flask import jsonify
+from api.v1.views import app_views
 
+"""Create a Flask application instance"""
 app = Flask(__name__)
+
+
+"""Register the blueprint to the Flask app"""
 app.register_blueprint(app_views)
 
 
 @app.teardown_appcontext
-def teardown_appcontext(exception):
-    """
-    This function is called when the app context tears down.
-    """
+def teardown_appcontext(exception=None):
+    """Close the storage on app context teardown."""
     storage.close()
-    
+
+
 @app.errorhandler(404)
-def not_found(error):
+def not_found(Error):
     """
-
+    Handler for 404 errors that returns a JSON response.
     """
-    response = {"Error": "Not found"}
-    return jsonify(response),404
-
-
+    return jsonify({"error":"Notfound"}), 404 
 if __name__ == "__main__":
     host = os.getenv('HBNB_API_HOST', '0.0.0.0')
-    port = int(os.getenv('HBNB_API_PORT', '5000'))
-    app.run(debug=True, host=host, port=port, threaded=True)
+    port = int(os.getenv('HBNB_API_PORT', 5000))
+    
+    # Run the Flask application
+    app.run(host=host, port=port, threaded=True)
